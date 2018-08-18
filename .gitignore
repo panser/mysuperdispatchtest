@@ -1,0 +1,33 @@
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### maven
+target/
+
+### gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+
+### Current app
+*.log*
+

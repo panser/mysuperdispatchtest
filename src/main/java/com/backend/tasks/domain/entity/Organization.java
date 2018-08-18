@@ -1,4 +1,4 @@
-package com.backend.tasks.domain;
+package com.backend.tasks.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

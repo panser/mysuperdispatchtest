@@ -2,11 +2,8 @@ package com.backend.tasks.web.rest;
 
 import com.backend.tasks.domain.dto.save.OrganizationSaveDto;
 import com.backend.tasks.domain.dto.view.OrganizationViewDto;
-import com.backend.tasks.domain.entity.Organization;
 import com.backend.tasks.repository.OrganizationRepository;
-import ma.glasnost.orika.BoundMapperFacade;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
+import com.backend.tasks.service.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -27,47 +24,34 @@ import java.util.List;
 public class OrganizationController {
 
     @Autowired
+    private OrganizationService organizationService;
+
+    @Autowired
     private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private MapperFactory mapperFactory;
 
     @GetMapping
     public List<OrganizationViewDto> getAll() {
-        List<Organization> orgs = organizationRepository.findAll();
-        List<OrganizationViewDto> orgViews = mapperFacade.mapAsList(orgs, OrganizationViewDto.class);
+        List<OrganizationViewDto> orgViews = organizationService.getAll();
         return orgViews;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrganizationViewDto save(@RequestBody @Validated OrganizationSaveDto organizationSaveDto) {
-        Organization organization = mapperFacade.map(organizationSaveDto, Organization.class);
-        organizationRepository.save(organization);
-        OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
+        OrganizationViewDto organizationViewDto = organizationService.save(organizationSaveDto);
         return organizationViewDto;
     }
 
     @PutMapping(value = "/{orgId}")
     public OrganizationViewDto update(@RequestParam Long orgId, @RequestBody @Validated OrganizationSaveDto organizationSaveDto) {
-        Organization organization = organizationRepository.getOne(orgId);
-
-        BoundMapperFacade<OrganizationSaveDto, Organization> mapper = mapperFactory.getMapperFacade(OrganizationSaveDto.class, Organization.class);
-        mapper.map(organizationSaveDto, organization);
-
-        organizationRepository.save(organization);
-        OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
+        OrganizationViewDto organizationViewDto = organizationService.update(orgId, organizationSaveDto);
 
         return organizationViewDto;
     }
 
     @GetMapping(value = "/{orgId}")
     public OrganizationViewDto get(@RequestParam Long orgId) {
-        Organization organization = organizationRepository.getOne(orgId);
-        OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
+        OrganizationViewDto organizationViewDto = organizationService.get(orgId);
         return organizationViewDto;
     }
 

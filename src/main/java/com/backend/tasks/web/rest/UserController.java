@@ -2,14 +2,8 @@ package com.backend.tasks.web.rest;
 
 import com.backend.tasks.domain.dto.save.UserSaveDto;
 import com.backend.tasks.domain.dto.view.UserViewDto;
-import com.backend.tasks.domain.entity.Organization;
-import com.backend.tasks.domain.entity.User;
-import com.backend.tasks.exception.AppException;
-import com.backend.tasks.repository.OrganizationRepository;
 import com.backend.tasks.repository.UserRepository;
-import ma.glasnost.orika.BoundMapperFacade;
-import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MapperFactory;
+import com.backend.tasks.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/users/{orgId}/users")
@@ -34,58 +27,30 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private MapperFacade mapperFacade;
-
-    @Autowired
-    private MapperFactory mapperFactory;
-
+    private UserService userService;
 
     @GetMapping
     public List<UserViewDto> getAll(@RequestParam Long orgId) {
-        List<User> users = userRepository.findAllByOrganizationId(orgId);
-        List<UserViewDto> userViews = mapperFacade.mapAsList(users, UserViewDto.class);
+        List<UserViewDto> userViews = userService.getAll(orgId);
         return userViews;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserViewDto save(@RequestParam Long orgId, @RequestBody @Validated UserSaveDto userSaveDto) {
-        User user = mapperFacade.map(userSaveDto, User.class);
-        Organization organization = organizationRepository.getOne(orgId);
-        user.setOrganization(organization);
-        userRepository.save(user);
-        UserViewDto userViewDto = mapperFacade.map(user, UserViewDto.class);
+        UserViewDto userViewDto = userService.save(orgId, userSaveDto);
         return userViewDto;
     }
 
     @PutMapping(value = "/{userId}")
     public UserViewDto update(@RequestParam Long orgId, @RequestParam Long userId, @RequestBody @Validated UserSaveDto userSaveDto) {
-        Optional<User> userOptional = userRepository.findOneByIdAndOrganizationId(userId, orgId);
-        if (!userOptional.isPresent()) {
-            throw new AppException("Current user does not belong to this organization");
-        }
-
-        User user = userOptional.get();
-        BoundMapperFacade<UserSaveDto, User> mapper = mapperFactory.getMapperFacade(UserSaveDto.class, User.class);
-        mapper.map(userSaveDto, user);
-
-        userRepository.save(user);
-        UserViewDto userViewDto = mapperFacade.map(user, UserViewDto.class);
-
+        UserViewDto userViewDto = userService.update(orgId, userId, userSaveDto);
         return userViewDto;
     }
 
     @GetMapping(value = "/{userId}")
     public UserViewDto get(@RequestParam Long orgId, @RequestParam Long userId) {
-        Optional<User> userOptional = userRepository.findOneByIdAndOrganizationId(userId, orgId);
-        if (!userOptional.isPresent()) {
-            throw new AppException("Current user does not belong to this organization");
-        }
-
-        UserViewDto userViewDto = mapperFacade.map(userOptional.get(), UserViewDto.class);
+        UserViewDto userViewDto = userService.get(orgId, userId);
         return userViewDto;
     }
 

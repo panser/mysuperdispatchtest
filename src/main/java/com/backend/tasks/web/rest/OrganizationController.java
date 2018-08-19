@@ -27,7 +27,7 @@ import java.util.List;
 public class OrganizationController {
 
     @Autowired
-    OrganizationRepository organizationRepository;
+    private OrganizationRepository organizationRepository;
 
     @Autowired
     private MapperFacade mapperFacade;

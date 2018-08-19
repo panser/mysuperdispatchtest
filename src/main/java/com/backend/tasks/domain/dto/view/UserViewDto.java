@@ -1,6 +1,5 @@
 package com.backend.tasks.domain.dto.view;
 
-import com.backend.tasks.domain.entity.Organization;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +15,6 @@ public class UserViewDto {
 
     private String password;
 
-    private Organization organizationId;
+    private Long organizationId;
 
 }

@@ -39,3 +39,8 @@ f. Get to `/orgs/{orgId}/users` endpoint should return list of all users for org
 ./gradlew clean bootRun
 ```
 and open in browser [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## Excuted notes !!!
+I did above task with few notes
+  * I put JPO in `domain.entity` package instead `repository`, as for me it's more common project structure  
+  * I didn't use interfaces for service layer, as for me it's outdated project structure for current layers project

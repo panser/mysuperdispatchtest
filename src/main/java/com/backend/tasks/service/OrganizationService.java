@@ -30,6 +30,12 @@ public class OrganizationService {
         return orgViews;
     }
 
+    public OrganizationViewDto get(Long orgId) {
+        Organization organization = organizationRepository.getOne(orgId);
+        OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
+        return organizationViewDto;
+    }
+
     public OrganizationViewDto save(OrganizationSaveDto organizationSaveDto) {
         Organization organization = mapperFacade.map(organizationSaveDto, Organization.class);
         organizationRepository.save(organization);
@@ -46,12 +52,6 @@ public class OrganizationService {
         organizationRepository.save(organization);
         OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
 
-        return organizationViewDto;
-    }
-
-    public OrganizationViewDto get(Long orgId) {
-        Organization organization = organizationRepository.getOne(orgId);
-        OrganizationViewDto organizationViewDto = mapperFacade.map(organization, OrganizationViewDto.class);
         return organizationViewDto;
     }
 

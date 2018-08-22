@@ -35,6 +35,12 @@ public class UserController {
         return userViews;
     }
 
+    @GetMapping(value = "/{userId}")
+    public UserViewDto get(@PathVariable Long orgId, @PathVariable Long userId) {
+        UserViewDto userViewDto = userService.get(orgId, userId);
+        return userViewDto;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserViewDto save(@PathVariable Long orgId, @RequestBody @Validated UserSaveDto userSaveDto) {
@@ -45,12 +51,6 @@ public class UserController {
     @PutMapping(value = "/{userId}")
     public UserViewDto update(@PathVariable Long orgId, @PathVariable Long userId, @RequestBody @Validated UserSaveDto userSaveDto) {
         UserViewDto userViewDto = userService.update(orgId, userId, userSaveDto);
-        return userViewDto;
-    }
-
-    @GetMapping(value = "/{userId}")
-    public UserViewDto get(@PathVariable Long orgId, @PathVariable Long userId) {
-        UserViewDto userViewDto = userService.get(orgId, userId);
         return userViewDto;
     }
 

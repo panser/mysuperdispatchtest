@@ -37,6 +37,16 @@ public class UserService {
         return userViews;
     }
 
+    public UserViewDto get(Long orgId, Long userId) {
+        Optional<User> userOptional = userRepository.findOneByIdAndOrganizationId(userId, orgId);
+        if (!userOptional.isPresent()) {
+            throw new AppException("Current user does not belong to this organization");
+        }
+
+        UserViewDto userViewDto = mapperFacade.map(userOptional.get(), UserViewDto.class);
+        return userViewDto;
+    }
+
     public UserViewDto save(Long orgId, UserSaveDto userSaveDto) {
         User user = mapperFacade.map(userSaveDto, User.class);
         Organization organization = organizationRepository.getOne(orgId);
@@ -59,16 +69,6 @@ public class UserService {
         userRepository.save(user);
         UserViewDto userViewDto = mapperFacade.map(user, UserViewDto.class);
 
-        return userViewDto;
-    }
-
-    public UserViewDto get(Long orgId, Long userId) {
-        Optional<User> userOptional = userRepository.findOneByIdAndOrganizationId(userId, orgId);
-        if (!userOptional.isPresent()) {
-            throw new AppException("Current user does not belong to this organization");
-        }
-
-        UserViewDto userViewDto = mapperFacade.map(userOptional.get(), UserViewDto.class);
         return userViewDto;
     }
 
